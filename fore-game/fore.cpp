@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 using namespace sf;
 
@@ -187,6 +188,23 @@ int main()
 	// control player input
 	bool acceptInput = false;
 
+	// prepare sound
+	sf::SoundBuffer chopBuffer; // holds actual audio data
+	chopBuffer.loadFromFile("sound/chop.wav");
+	sf::Sound chop;
+	chop.setBuffer(chopBuffer); // associate with soundBuffer object
+
+	sf::SoundBuffer deathBuffer;
+	deathBuffer.loadFromFile("sound/death.wav");
+	sf::Sound death;
+	death.setBuffer(deathBuffer);
+
+	// out of time
+	sf::SoundBuffer outBuffer;
+	outBuffer.loadFromFile("sound/out_of_time.wav");
+	sf::Sound outOfTime;
+	outOfTime.setBuffer(outBuffer);
+
 	while (window.isOpen())
 	{
 		/*
@@ -265,6 +283,9 @@ int main()
 				logActive = true; // animate log each frame
 
 				acceptInput = false; // no more chops possible
+
+				// play chop fx
+				chop.play();
 			}
 			// handle left key
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
@@ -287,6 +308,11 @@ int main()
 				spriteLog.setPosition(810, 720); // starting position
 				logSpeedX = -5000;
 				logActive = true; // animate log each frame
+
+				acceptInput = false; // no more chops possible
+
+				// play chop fx
+				chop.play();
 			}
 		}
 
@@ -295,6 +321,8 @@ int main()
 		UPDATE SCENE
 		*********************************************
 		*/
+
+		// TIME HANDLING
 		if (!paused) // game won't update when paused
 		{
 			// measure time
@@ -321,6 +349,9 @@ int main()
 					textRect.top +
 					textRect.height / 2.0f);
 				messageText.setPosition(1920 / 2.0f, 1080 / 2.0f); // re-calculate position
+
+				// play out of time fx
+				outOfTime.play();
 			}
 
 			// setup the bee
@@ -478,6 +509,36 @@ int main()
 					logActive = false;
 					spriteLog.setPosition(810, 720);
 				}
+			}
+
+			// if player is crushed by branch
+			if (branchPosition[5] == playerSide)
+			{
+				// death
+				paused = true;
+				acceptInput = false;
+
+				// draw gravestone
+				spriteRip.setPosition(525, 760);
+
+				// hide player
+				spritePlayer.setPosition(2000, 660);
+
+				// change text message
+				messageText.setString("YOU'VE BEEN BRANCHED.");
+
+				// center message
+				sf::FloatRect textRect = messageText.getLocalBounds();
+
+				messageText.setOrigin(textRect.left +
+					textRect.width / 2.0f,
+					textRect.top + textRect.height / 2.0f);
+
+				messageText.setPosition(1920 / 2.0f,
+					1080 / 2.0f);
+
+				// play death fx
+				death.play();
 			}
 
 		} // end if(!paused)
