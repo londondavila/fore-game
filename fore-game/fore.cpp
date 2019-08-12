@@ -10,6 +10,7 @@ using namespace sf;
 void updateBranches(int seed); // function prototype, no value returned
 const int NUM_BRANCHES = 6; // 6 moving branches
 sf::Sprite branches[NUM_BRANCHES];
+
 // where is player/branch?
 // left or right
 enum class side { LEFT, RIGHT, NONE };
@@ -63,25 +64,43 @@ int main()
 	sf::Texture textureCloud;
 	// load 1 new texture
 	textureCloud.loadFromFile("graphics/lame-cloud.png");
+	// make cloud array
+	const int NUM_CLOUDS = 6;
+	sf::Sprite clouds[NUM_CLOUDS];
+	int cloudSpeeds[NUM_CLOUDS];
+	bool cloudsActive[NUM_CLOUDS];
+
+	for (int i = 0; i < NUM_CLOUDS; i++)
+	{
+		clouds[i].setTexture(textureCloud);
+		clouds[i].setPosition(-300, i * 150);
+		cloudsActive[i] = false;
+		cloudSpeeds[i] = 0;
+	}
+
+	// make 3 cloud sprites from 1 texture
+	//sf::Texture textureCloud;
+	// load 1 new texture
+	//textureCloud.loadFromFile("graphics/lame-cloud.png");
 	// 3 new sprites with same texture
-	sf::Sprite spriteCloud1;
-	sf::Sprite spriteCloud2;
-	sf::Sprite spriteCloud3;
-	spriteCloud1.setTexture(textureCloud);
-	spriteCloud2.setTexture(textureCloud);
-	spriteCloud3.setTexture(textureCloud);
+	//sf::Sprite spriteCloud1;
+	//sf::Sprite spriteCloud2;
+	//sf::Sprite spriteCloud3;
+	//spriteCloud1.setTexture(textureCloud);
+	//spriteCloud2.setTexture(textureCloud);
+	//spriteCloud3.setTexture(textureCloud);
 	// position the clouds off screen
-	spriteCloud1.setPosition(0, 0);
-	spriteCloud2.setPosition(0, 250);
-	spriteCloud3.setPosition(0, 500);
+	//spriteCloud1.setPosition(0, 0);
+	//spriteCloud2.setPosition(0, 250);
+	//spriteCloud3.setPosition(0, 500);
 	// are the clouds currently on screen?
-	bool cloud1Active = false;
-	bool cloud2Active = false;
-	bool cloud3Active = false;
+	//bool cloud1Active = false;
+	//bool cloud2Active = false;
+	//bool cloud3Active = false;
 	// how fast is each cloud?
-	float cloud1Speed = 0.0f;
-	float cloud2Speed = 0.0f;
-	float cloud3Speed = 0.0f;
+	//float cloud1Speed = 0.0f;
+	//float cloud2Speed = 0.0f;
+	//float cloud3Speed = 0.0f;
 
 	// variables to control time itself
 	sf::Clock clock;
@@ -106,7 +125,7 @@ int main()
 	sf::Text messageText;
 	sf::Text scoreText;
 
-	// we need to choose a font
+	// choose a font
 	sf::Font font;
 	font.loadFromFile("fonts/BebasNeue-Regular.tff");
 
@@ -135,6 +154,17 @@ int main()
 	messageText.setPosition(1920 / 2.0f, 1080 / 2.0f); // messageText is then posit. in the exact center of screen
 	scoreText.setPosition(20, 20); // position top left with a little padding
 
+	// backgrounds for text
+	sf::RectangleShape rect1;
+	rect1.setFillColor(sf::Color(0, 0, 0, 150));
+	rect1.setSize(sf::Vector2f(600, 105));
+	rect1.setPosition(1150, 30);
+
+	sf::RectangleShape rect2;
+	rect2.setFillColor(sf::Color(0, 0, 0, 150));
+	rect2.setSize(sf::Vector2f(1000, 105));
+	rect2.setPosition(1150, 30);
+
 	// prepare 6 branches
 	sf::Texture textureBranch;
 	textureBranch.loadFromFile("graphics/branch.png");
@@ -160,7 +190,7 @@ int main()
 	textureRip.loadFromFile("graphics/rip.png");
 	sf::Sprite spriteRip;
 	spriteRip.setTexture(textureRip);
-	spriteRip.setPosition(600, 800);
+	spriteRip.setPosition(600, 860);
 
 	// prepare axe
 	sf::Texture textureAxe;
@@ -205,14 +235,12 @@ int main()
 	sf::Sound outOfTime;
 	outOfTime.setBuffer(outBuffer);
 
+	// control drawing of score
+	int lastDrawn = 0;
+
 	while (window.isOpen())
 	{
-		/*
-		*********************************************
-		HANDLE PLAYER INPUT
-		*********************************************
-		*/
-
+		// score++;
 		sf::Event event;
 		while (window.pollEvent(event)) // puts data into event object, which describes an operating system event
 		{
@@ -227,7 +255,11 @@ int main()
 			}
 		}
 
-
+		/*
+		*********************************************
+		HANDLE PLAYER INPUT
+		*********************************************
+		*/
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) // exit game
 		{
@@ -382,7 +414,40 @@ int main()
 				}
 			}
 
-			// manage clouds
+			// manage clouds with arrays
+			for (int i = 0; i < NUM_CLOUDS; i++)
+			{
+				if (!cloudsActive[i])
+				{
+					// speed of cloud
+					srand((int)time(0) * i);
+					cloudSpeeds[i] = (rand() % 200);
+
+					// height of cloud
+					srand((int)time(0) * i);
+					float height = (rand() % 150);
+					clouds[i].setPosition(-200, height);
+					cloudsActive[i] = true;
+				}
+				else
+				{
+					// set new position
+					clouds[i].setPosition(
+						clouds[i].getPosition().x +
+						(cloudSpeeds[i] * deltaTime.asSeconds()),
+						clouds[i].getPosition().y);
+
+					// if cloud reaches right hand edge of screen
+					if (clouds[i].getPosition().x > 1920)
+					{
+						// set it up for a new cloud next frame
+						cloudsActive[i] = false;
+					}
+				}
+			}
+
+			/*
+			// manage clouds (OLD)
 			// cloud 1
 			if (!cloud1Active)
 			{
@@ -466,11 +531,19 @@ int main()
 					cloud3Active = false; // create new cloud
 				}
 			}
+			*/
 
-			// update score text
-			std::stringstream ss; // ss adapts each frame
-			ss << "Score = " << score;
-			scoreText.setString(ss.str());
+			// draw score once every 100 frames
+			lastDrawn++;
+			if (lastDrawn == 100)
+			{
+				std::stringstream ss; // ss adapts each frame
+				ss << "Score = " << score;
+				scoreText.setString(ss.str());
+
+				lastDrawn = 0;
+			}
+			
 
 			// update branch sprites
 			for (int i = 0; i < NUM_BRANCHES; i++)
@@ -479,11 +552,13 @@ int main()
 				if (branchPosition[i] == side::LEFT)
 				{
 					branches[i].setPosition(610, height); // move to left side
+					branches[i].setOrigin(220, 40);
 					branches[i].setRotation(180); // flip, as hangs right by default
 				}
 				else if (branchPosition[i] == side::RIGHT)
 				{
 					branches[i].setPosition(1330, height); // move to right side
+					branches[i].setOrigin(220, 40);
 					branches[i].setRotation(0); // set rotation to normal
 				}
 				else
@@ -556,9 +631,16 @@ int main()
 		window.draw(spriteBackground);
 
 		// draw clouds
+		for (int i = 0; i < NUM_CLOUDS; i++)
+		{
+			window.draw(clouds[i]);
+		}
+
+		/*
 		window.draw(spriteCloud1);
 		window.draw(spriteCloud2);
 		window.draw(spriteCloud3);
+		*/
 
 		// draw branches
 		for (int i = 0; i < NUM_BRANCHES; i++)
