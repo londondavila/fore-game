@@ -374,7 +374,7 @@ int main() {
         messageText.setString("Out of time!");
 
         // re-position the text based on new size
-        FloatRect textRect = messageText.getLocalBounds();
+        textRect = messageText.getLocalBounds();
         messageText.setOrigin(textRect.left + textRect.width / 2.0f,
                               textRect.top + textRect.height / 2.0f);
         messageText.setPosition(1920 / 2.0f,
@@ -578,7 +578,7 @@ int main() {
         messageText.setString("YOU'VE BEEN BRANCHED.");
 
         // center message
-        sf::FloatRect textRect = messageText.getLocalBounds();
+        textRect = messageText.getLocalBounds();
 
         messageText.setOrigin(textRect.left + textRect.width / 2.0f,
                               textRect.top + textRect.height / 2.0f);

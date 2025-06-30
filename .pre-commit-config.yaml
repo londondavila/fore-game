@@ -6,18 +6,18 @@ repos:
         types_or: [c++]
         args: [--style=Google, -sort-includes]
 
-  # - repo: https://github.com/pocc/pre-commit-hooks
-  #   rev: v1.3.5
-  #   hooks:
-  #     - id: cppcheck
-  #       args: [--enable=all, --language=c++, --std=c++11, -Iinclude, -Isrc]
-  #       files: ^(src/)
+  - repo: https://github.com/pocc/pre-commit-hooks
+    rev: v1.3.5
+    hooks:
+      - id: cppcheck
+        args: [--enable=all, --language=c++, --std=c++11, -Isrc]
+        files: ^(src/)
         
-  #     - id: clang-tidy
-  #       entry: bash -c 'find src -name "*.cpp" -o -name "*.h" | xargs clang-tidy -p build'
-  #       args:  [--checks=*, -std=c++17, --use-color, fix-errors, -p]
-  #       language: system
-  #       files: ^(src/)
+      - id: clang-tidy
+        entry: bash -c 'find src -name "*.cpp" -o -name "*.h" | xargs clang-tidy -p build'
+        args:  [--checks=*, -std=c++17, --use-color, fix-errors, -p]
+        language: system
+        files: ^(src/)
 
   - repo: https://github.com/cpplint/cpplint
     rev: 2.0.0
