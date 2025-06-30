@@ -127,7 +127,7 @@ int main() {
 
   // choose a font
   sf::Font font;
-  font.loadFromFile("fonts/BebasNeue-Regular.tff");
+  font.loadFromFile("fonts/BebasNeue-Regular.ttf");
 
   // set the font to message
   messageText.setFont(font);
