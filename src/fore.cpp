@@ -35,12 +35,10 @@ int main() {
 
   // create sprite
   sf::Sprite spriteBackground;
-
-  // attach the texture to the sprite
-  spriteBackground.setTexture(textureBackground);
-
-  // set the spriteBackground to cover the screen
-  spriteBackground.setPosition(0, 0);
+  spriteBackground.setTexture(
+      textureBackground);  // attach the texture to the sprite
+  spriteBackground.setPosition(
+      0, 0);  // set the spriteBackground to cover the screen
 
   // make tree sprite
   sf::Texture textureTree;
@@ -55,17 +53,14 @@ int main() {
   sf::Sprite spriteBee;
   spriteBee.setTexture(textureBee);
   spriteBee.setPosition(0, 800);
-  // bee currently moving?
-  bool beeActive = false;
-  // how fast can bee fly?
-  float beeSpeed = 0.0f;
 
-  // make 3 cloud sprites from 1 texture
-  sf::Texture textureCloud;
-  // load 1 new texture
-  textureCloud.loadFromFile("graphics/lame-cloud.png");
-  // make cloud array
-  const int NUM_CLOUDS = 6;
+  bool beeActive = false;  // bee currently moving?
+  float beeSpeed = 0.0f;   // how fast can bee fly?
+
+  sf::Texture textureCloud;  // make 3 cloud sprites from 1 texture
+  textureCloud.loadFromFile("graphics/lame-cloud.png");  // load 1 new texture
+
+  const int NUM_CLOUDS = 6;  // make cloud array
   sf::Sprite clouds[NUM_CLOUDS];
   int cloudSpeeds[NUM_CLOUDS];
   bool cloudsActive[NUM_CLOUDS];
@@ -128,22 +123,19 @@ int main() {
 
   // choose a font
   sf::Font font;
-  font.loadFromFile("fonts/BebasNeue-Regular.tff");
+  font.loadFromFile("fonts/BebasNeue-Regular.ttf");
 
   // set the font to message
   messageText.setFont(font);
   scoreText.setFont(font);
 
-  // assign the message
-  messageText.setString("Press Enter to start!");
+  messageText.setString("Press Enter to start!");  // assign the message
   scoreText.setString("Score = 0");
 
-  // make it big
-  messageText.setCharacterSize(75);
+  messageText.setCharacterSize(75);  // make it big
   scoreText.setCharacterSize(100);
 
-  // choose color
-  messageText.setFillColor(sf::Color::White);
+  messageText.setFillColor(sf::Color::White);  // choose color
   scoreText.setFillColor(sf::Color::White);
 
   // position the text
@@ -260,9 +252,9 @@ int main() {
     }
 
     /*
-    *********************************************
-    HANDLE PLAYER INPUT
-    *********************************************
+    ***********************
+    * HANDLE PLAYER INPUT *
+    ***********************
     */
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))  // exit game
@@ -274,7 +266,6 @@ int main() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
       paused = false;
 
-      // reset the time and score
       score = 0;  // on each game start
       timeRemaining = 5;
 
@@ -286,8 +277,7 @@ int main() {
       // make sure gravestone is hidden
       spriteRip.setPosition(675, 2000);  // remove from screen
 
-      // move player into position
-      spritePlayer.setPosition(580, 720);
+      spritePlayer.setPosition(580, 720);  // move player into position
       acceptInput = true;  // ready to accept presses to chop tree
     }
 
@@ -347,9 +337,9 @@ int main() {
     }
 
     /*
-    *********************************************
-    UPDATE SCENE
-    *********************************************
+    ***********************
+    *    UPDATE SCENE     *
+    ***********************
     */
 
     // TIME HANDLING
@@ -386,12 +376,10 @@ int main() {
 
       // setup the bee
       if (!beeActive) {
-        // how fast the bee is
-        srand((int)time(0) * 10);
+        srand((int)time(0) * 10);         // how fast the bee is
         beeSpeed = (rand() % 200) + 200;  // rand # between 199 and 399
 
-        // how high the bee is
-        srand((int)time(0) * 10);
+        srand((int)time(0) * 10);             // how high the bee is
         float height = (rand() % 500) + 500;  // rand # between 499 & 999
         spriteBee.setPosition(2000, height);
         beeActive = true;
@@ -434,96 +422,8 @@ int main() {
         }
       }
 
-      /*
-      // manage clouds (OLD)
-      // cloud 1
-      if (!cloud1Active)
-      {
-              // speed of cloud
-              srand((int)time(0) * 10);
-              cloud1Speed = (rand() % 200);
-
-              // height of cloud
-              srand((int)time(0) * 10);
-              float height = (rand() % 150);
-              spriteCloud1.setPosition(-200, height);
-              cloud1Active = true;
-      }
-      else
-      {
-              spriteCloud1.setPosition(
-                      spriteCloud1.getPosition().x +
-                      (cloud1Speed * deltaTime.asSeconds()),
-                      spriteCloud1.getPosition().y);
-
-              // has the cloud reached the right hand edge of screen
-              if (spriteCloud1.getPosition().x < 1920)
-              {
-                      // set it up for a new cloud next frame
-                      cloud1Active = false; // create new cloud
-              }
-      }
-
-      // cloud 2
-      if (!cloud2Active)
-      {
-              // speed of cloud
-              srand((int)time(0) * 20);
-              cloud2Speed = (rand() % 200);
-
-              // height of cloud
-              srand((int)time(0) * 20);
-              float height = (rand() % 300) - 150;
-              spriteCloud2.setPosition(-200, height);
-              cloud2Active = true;
-      }
-      else
-      {
-              spriteCloud2.setPosition(
-                      spriteCloud2.getPosition().x +
-                      (cloud2Speed * deltaTime.asSeconds()),
-                      spriteCloud2.getPosition().y);
-
-              // has the cloud reached the right hand edge of screen
-              if (spriteCloud2.getPosition().x < 1920)
-              {
-                      // set it up for a new cloud next frame
-                      cloud2Active = false; // create new cloud
-              }
-      }
-
-      // cloud 3
-      if (!cloud3Active)
-      {
-              // speed of cloud
-              srand((int)time(0) * 30);
-              cloud3Speed = (rand() % 200);
-
-              // height of cloud
-              srand((int)time(0) * 30);
-              float height = (rand() % 450) - 150;
-              spriteCloud3.setPosition(-200, height);
-              cloud3Active = true;
-      }
-      else
-      {
-              spriteCloud3.setPosition(
-                      spriteCloud3.getPosition().x +
-                      (cloud1Speed * deltaTime.asSeconds()),
-                      spriteCloud3.getPosition().y);
-
-              // has the cloud reached the right hand edge of screen
-              if (spriteCloud3.getPosition().x < 1920)
-              {
-                      // set it up for a new cloud next frame
-                      cloud3Active = false; // create new cloud
-              }
-      }
-      */
-
-      // draw score once every 100 frames
       lastDrawn++;
-      if (lastDrawn == 100) {
+      if (lastDrawn == 100) {  // draw score once every 100 frames
         std::stringstream ss;  // ss adapts each frame
         ss << "Score = " << score;
         scoreText.setString(ss.str());
@@ -568,11 +468,8 @@ int main() {
         paused = true;
         acceptInput = false;
 
-        // draw gravestone
-        spriteRip.setPosition(525, 760);
-
-        // hide player
-        spritePlayer.setPosition(2000, 660);
+        spriteRip.setPosition(525, 760);      // draw gravestone
+        spritePlayer.setPosition(2000, 660);  // hide player
 
         // change text message
         messageText.setString("YOU'VE BEEN BRANCHED.");
@@ -592,56 +489,32 @@ int main() {
     }  // end if(!paused)
 
     /*
-    *********************************************
-    DRAW SCENE
-    *********************************************
+    ***********************
+    *     DRAW SCENE      *
+    ***********************
     */
 
-    // clear everything from last frame
-    window.clear();
-
-    // Draw game scene here
-    window.draw(spriteBackground);
+    window.clear();                 // clear everything from last frame
+    window.draw(spriteBackground);  // draw game scene here
 
     // draw clouds
     for (int i = 0; i < NUM_CLOUDS; i++) {
       window.draw(clouds[i]);
     }
 
-    /*
-    window.draw(spriteCloud1);
-    window.draw(spriteCloud2);
-    window.draw(spriteCloud3);
-    */
-
     // draw branches
     for (int i = 0; i < NUM_BRANCHES; i++) {
       window.draw(branches[i]);
     }
 
-    // draw tree
-    window.draw(spriteTree);
-
-    // draw player
-    window.draw(spritePlayer);
-
-    // draw axe
-    window.draw(spriteAxe);
-
-    // draw flying log
-    window.draw(spriteLog);
-
-    // draw gravestone
-    window.draw(spriteRip);
-
-    // draw bee (in front of tree)
-    window.draw(spriteBee);
-
-    // draw score
-    window.draw(scoreText);
-
-    // draw timebar
-    window.draw(timeBar);  // draw after tree
+    window.draw(spriteTree);    // draw tree
+    window.draw(spritePlayer);  // draw player
+    window.draw(spriteAxe);     // draw axe
+    window.draw(spriteLog);     // draw flying log
+    window.draw(spriteRip);     // draw gravestone
+    window.draw(spriteBee);     // draw bee (in front of tree)
+    window.draw(scoreText);     // draw score
+    window.draw(timeBar);       // draw timebar, after tree
 
     if (paused) {
       // draw message
