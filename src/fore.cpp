@@ -55,10 +55,9 @@ int main() {
   sf::Sprite spriteBee;
   spriteBee.setTexture(textureBee);
   spriteBee.setPosition(0, 800);
-  // bee currently moving?
-  bool beeActive = false;
-  // how fast can bee fly?
-  float beeSpeed = 0.0f;
+
+  bool beeActive = false;  // bee currently moving?
+  float beeSpeed = 0.0f;   // how fast can bee fly?
 
   // make 3 cloud sprites from 1 texture
   sf::Texture textureCloud;
@@ -104,7 +103,7 @@ int main() {
   // variables to control time itself
   sf::Clock clock;
 
-  // TIME BAR
+  // TIME BAR //
   sf::RectangleShape timeBar;  // declare rectangle shape
   float timeBarStartWidth = 400;
   float timeBarHeight = 80;
@@ -260,13 +259,12 @@ int main() {
     }
 
     /*
-    *********************************************
-    HANDLE PLAYER INPUT
-    *********************************************
+    ***********************
+    * HANDLE PLAYER INPUT *
+    ***********************
     */
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))  // exit game
-    {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {  // exit game
       window.close();
     }
 
@@ -275,7 +273,7 @@ int main() {
       paused = false;
 
       // reset the time and score
-      score = 0;  // on each game start
+      score = 0;
       timeRemaining = 5;
 
       // make branches disappear
@@ -347,15 +345,14 @@ int main() {
     }
 
     /*
-    *********************************************
-    UPDATE SCENE
-    *********************************************
+    ****************
+    * UPDATE SCENE *
+    ****************
     */
 
-    // TIME HANDLING
+    // TIME HANDLING //
     if (!paused)  // game won't update when paused
     {
-      // measure time
       sf::Time deltaTime = clock.restart();
 
       // subtract from amount of time remaining
@@ -365,8 +362,7 @@ int main() {
       timeBar.setSize(sf::Vector2f(timeBarWidthPerSecond * timeRemaining,
                                    timeBarHeight));  // adjust timeBar
 
-      if (timeRemaining <= 0.0f)  // time runs out
-      {
+      if (timeRemaining <= 0.0f) {
         // pause game
         paused = true;
 
@@ -380,7 +376,6 @@ int main() {
         messageText.setPosition(1920 / 2.0f,
                                 1080 / 2.0f);  // re-calculate position
 
-        // play out of time fx
         outOfTime.play();
       }
 
@@ -433,93 +428,6 @@ int main() {
           }
         }
       }
-
-      /*
-      // manage clouds (OLD)
-      // cloud 1
-      if (!cloud1Active)
-      {
-              // speed of cloud
-              srand((int)time(0) * 10);
-              cloud1Speed = (rand() % 200);
-
-              // height of cloud
-              srand((int)time(0) * 10);
-              float height = (rand() % 150);
-              spriteCloud1.setPosition(-200, height);
-              cloud1Active = true;
-      }
-      else
-      {
-              spriteCloud1.setPosition(
-                      spriteCloud1.getPosition().x +
-                      (cloud1Speed * deltaTime.asSeconds()),
-                      spriteCloud1.getPosition().y);
-
-              // has the cloud reached the right hand edge of screen
-              if (spriteCloud1.getPosition().x < 1920)
-              {
-                      // set it up for a new cloud next frame
-                      cloud1Active = false; // create new cloud
-              }
-      }
-
-      // cloud 2
-      if (!cloud2Active)
-      {
-              // speed of cloud
-              srand((int)time(0) * 20);
-              cloud2Speed = (rand() % 200);
-
-              // height of cloud
-              srand((int)time(0) * 20);
-              float height = (rand() % 300) - 150;
-              spriteCloud2.setPosition(-200, height);
-              cloud2Active = true;
-      }
-      else
-      {
-              spriteCloud2.setPosition(
-                      spriteCloud2.getPosition().x +
-                      (cloud2Speed * deltaTime.asSeconds()),
-                      spriteCloud2.getPosition().y);
-
-              // has the cloud reached the right hand edge of screen
-              if (spriteCloud2.getPosition().x < 1920)
-              {
-                      // set it up for a new cloud next frame
-                      cloud2Active = false; // create new cloud
-              }
-      }
-
-      // cloud 3
-      if (!cloud3Active)
-      {
-              // speed of cloud
-              srand((int)time(0) * 30);
-              cloud3Speed = (rand() % 200);
-
-              // height of cloud
-              srand((int)time(0) * 30);
-              float height = (rand() % 450) - 150;
-              spriteCloud3.setPosition(-200, height);
-              cloud3Active = true;
-      }
-      else
-      {
-              spriteCloud3.setPosition(
-                      spriteCloud3.getPosition().x +
-                      (cloud1Speed * deltaTime.asSeconds()),
-                      spriteCloud3.getPosition().y);
-
-              // has the cloud reached the right hand edge of screen
-              if (spriteCloud3.getPosition().x < 1920)
-              {
-                      // set it up for a new cloud next frame
-                      cloud3Active = false; // create new cloud
-              }
-      }
-      */
 
       // draw score once every 100 frames
       lastDrawn++;
@@ -592,56 +500,32 @@ int main() {
     }  // end if(!paused)
 
     /*
-    *********************************************
-    DRAW SCENE
-    *********************************************
+    ****************
+    ** DRAW SCENE **
+    ****************
     */
 
-    // clear everything from last frame
-    window.clear();
-
-    // Draw game scene here
-    window.draw(spriteBackground);
+    window.clear();                 // clear everything from last frame
+    window.draw(spriteBackground);  // draw game scene here
 
     // draw clouds
     for (int i = 0; i < NUM_CLOUDS; i++) {
       window.draw(clouds[i]);
     }
 
-    /*
-    window.draw(spriteCloud1);
-    window.draw(spriteCloud2);
-    window.draw(spriteCloud3);
-    */
-
     // draw branches
     for (int i = 0; i < NUM_BRANCHES; i++) {
       window.draw(branches[i]);
     }
 
-    // draw tree
-    window.draw(spriteTree);
-
-    // draw player
-    window.draw(spritePlayer);
-
-    // draw axe
-    window.draw(spriteAxe);
-
-    // draw flying log
-    window.draw(spriteLog);
-
-    // draw gravestone
-    window.draw(spriteRip);
-
-    // draw bee (in front of tree)
-    window.draw(spriteBee);
-
-    // draw score
-    window.draw(scoreText);
-
-    // draw timebar
-    window.draw(timeBar);  // draw after tree
+    window.draw(spriteTree);    // draw tree
+    window.draw(spritePlayer);  // draw player
+    window.draw(spriteAxe);     // draw axe
+    window.draw(spriteLog);     // draw flying log
+    window.draw(spriteRip);     // draw gravestone
+    window.draw(spriteBee);     // draw bee (in front of tree)
+    window.draw(scoreText);     // draw score
+    window.draw(timeBar);       // timebar, draw after tree
 
     if (paused) {
       // draw message
