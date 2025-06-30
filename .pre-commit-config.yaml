@@ -11,23 +11,23 @@ repos:
   #   hooks:
   #     - id: cppcheck
   #       args: [--enable=all, --language=c++, --std=c++11, -Iinclude, -Isrc]
-  #       files: ^(include/|src/)
+  #       files: ^(src/)
         
   #     - id: clang-tidy
-  #       entry: bash -c 'find src include tests -name "*.cpp" -o -name "*.h" | xargs clang-tidy -p build'
+  #       entry: bash -c 'find src -name "*.cpp" -o -name "*.h" | xargs clang-tidy -p build'
   #       args:  [--checks=*, -std=c++17, --use-color, fix-errors, -p]
   #       language: system
-  #       files: ^(include/|src/)
+  #       files: ^(src/)
 
-  # - repo: https://github.com/cpplint/cpplint
-  #   rev: 2.0.0
-  #   hooks:
-  #     - id: cpplint
-  #       # entry: bash -c 'find src include -name "*.cpp" -o -name "*.h" | xargs cpplint'
-  #       args: 
-  #         - --filter=-whitespace/line_length,-whitespace/parens,-legal,-build/include_subdir
-  #         - --extensions=c++,h,h++
-  #         - --verbose=5
-  #         - --quiet
-  #         - --recursive
-  #         - --output=emacs
+  - repo: https://github.com/cpplint/cpplint
+    rev: 2.0.0
+    hooks:
+      - id: cpplint
+        # entry: bash -c 'find src -name "*.cpp" -o -name "*.h" | xargs cpplint'
+        args: 
+          - --filter=-whitespace/line_length,-whitespace/parens,-legal,-build/include_subdir
+          - --extensions=c++,h,h++
+          - --verbose=5
+          - --quiet
+          - --recursive
+          - --output=emacs
